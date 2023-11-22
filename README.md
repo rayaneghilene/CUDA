@@ -19,7 +19,7 @@ If you have any questions or would like to discuss my work further, please don't
 
 
 ## Credits
-This repository was created by GHILENE Rayane in collaboration. The labs were adapted from the course materials provided by Mr Larue Nicolas at ENSEA.
+This repository was created by GHILENE Rayane. The labs were adapted from the course materials provided by Mr Larue Nicolas at ENSEA.
 
 
 ## License
