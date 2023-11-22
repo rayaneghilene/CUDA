@@ -1,7 +1,7 @@
 # CUDA
 
 
-![cuda](cuda.png)
+![cuda](https://github.com/rayaneghilene/CUDA/blob/main/Cuda.png)
 
 
 
