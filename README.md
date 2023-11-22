@@ -1,4 +1,4 @@
-# CUDA
+# CUDA For Signal Processing
 
 
 ![cuda](https://github.com/rayaneghilene/CUDA/blob/main/Cuda.png)
