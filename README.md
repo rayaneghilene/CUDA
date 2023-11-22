@@ -1,8 +1,9 @@
 # CUDA For Signal Processing
 
 
-![cuda](https://github.com/rayaneghilene/CUDA/blob/main/Cuda.png)
-
+<div align="center">
+    <img src="https://github.com/rayaneghilene/CUDA/blob/main/Cuda.png" alt="cuda" style="display: block; margin: 0 auto;">
+</div>
 
 
 ## Description
