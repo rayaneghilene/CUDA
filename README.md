@@ -20,7 +20,7 @@ To use the code in this repository, simply clone the repository and navigate to 
 ## Practical work
 We started by testing the difference in execution time of the CPU vs GPU, here's what we found:
 
-![CPU_vs_GPU](https://github.com/rayaneghilene/CUDA/blob/main/Screenshot%from%2023-12-06%16-51-21.png)
+![CPU_vs_GPU](https://github.com/rayaneghilene/CUDA/blob/main/Screenshot%20from%202023-12-06%2016-51-21.png)
 
 As we can see the GPU outperforms the CPU in bit instructions, adding and multiplying matrixes 
 
