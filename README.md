@@ -6,12 +6,27 @@
 </div>
 
 
+
+
 ## Description
-This repository presents basic manipulations using CUDA. it aims to present the different methods we can use Hardware for Signal Processing and Deep Learning
+This repository presents basic manipulations using CUDA. it aims to present the different methods we can use Hardware for Signal Processing and Deep Learning.
+
 
 
 ## How to use
 To use the code in this repository, simply clone the repository and navigate to the folder corresponding to the functions you're interested in. Each file contains its own set of instructions, which should be self-contained and easy to follow.
+
+
+## Practical work
+We started by testing the difference in execution time of the CPU vs GPU, here's what we found:
+
+![CPU_vs_GPU](https://github.com/rayaneghilene/CUDA/blob/main/Screenshot%from%2023-12-06%16-51-21.png)
+
+As we can see the GPU outperforms the CPU in bit instructions, adding and multiplying matrixes 
+
+Next we will try to define a CNN model architecture by first defining a 2D convolution Function, defining our model and then testing it on the MNIST Dataset
+# CNN model Implementation
+
 
 
 ## Contact

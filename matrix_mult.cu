@@ -324,62 +324,14 @@ int test_raw_data() {
 
 
 
-
-__global__ void matrixConvolution(float* A, float* B, float* C, int m, int n, int p) {
-    int row = blockIdx.y * blockDim.y + threadIdx.y;
-    int col = blockIdx.x * blockDim.x + threadIdx.x;
-
-    if (row < m && col < p) {
-        float sum = 0.0f;
-        for (int k = 0; k < n; k++) {
-            sum += A[row * n + k] * B[k * p + col];
-        }
-        C[row * p + col] = sum;
-    }
-}
-
-void convolution(float* A, float* B, float* C, int m, int n, int p) {
-    float* d_A;
-    float* d_B;
-    float* d_C;
-
-    int size_A = m * n * sizeof(float);
-    int size_B = n * p * sizeof(float);
-    int size_C = m * p * sizeof(float);
-
-    cudaMalloc((void**)&d_A, size_A);
-    cudaMalloc((void**)&d_B, size_B);
-    cudaMalloc((void**)&d_C, size_C);
-
-    cudaMemcpy(d_A, A, size_A, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_B, B, size_B, cudaMemcpyHostToDevice);
-
-    dim3 threadsPerBlock(16, 16);
-    dim3 numBlocks((p + threadsPerBlock.x - 1) / threadsPerBlock.x, (m + threadsPerBlock.y - 1) / threadsPerBlock.y);
-
-    matrixConvolution<<<numBlocks, threadsPerBlock>>>(d_A, d_B, d_C, m, n, p);
-
-    cudaMemcpy(C, d_C, size_C, cudaMemcpyDeviceToHost);
-
-    cudaFree(d_A);
-    cudaFree(d_B);
-    cudaFree(d_C);
-}
-
-
-
-
-
-
-
-
 int main() {
-    
-    // CPU_test();
-    // GPUtest();
+    printf("Execution Time when using CPU\n");
+    CPU_test();
+    printf("Execution Time when using GPU\n");
+    GPUtest();
     
     // test_raw_data();
-    conv_test();
+    // conv_test();
     return 0;
 }
 
