@@ -325,10 +325,12 @@ int test_raw_data() {
 
 
 int main() {
-    printf("Execution Time when using CPU\n");
+    /* printf("Execution Time when using CPU\n");
     CPU_test();
     printf("Execution Time when using GPU\n");
     GPUtest();
+    */ 
+
     
     // test_raw_data();
     // conv_test();

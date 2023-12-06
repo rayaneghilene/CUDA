@@ -3,7 +3,6 @@
 #include <time.h>
 
 
-////// 1) Une matrice float data de taille 1x32x32 initialisé à 0 qui prendra les valeurs de l'image d'entrée.
 
 
 #include <stdio.h>
@@ -21,9 +20,10 @@ void MatrixPrint(float *M, int n, int p) {
 }
 
 
-__global__ void matrixConvolution(float* A, float* B, float* C, int m, int n, int p) {
+__global__ void matrixConvolution(float* A, float* B, float* C, int m, int n, int p, int q) {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
+    int layer = 
 
     if (row < m && col < p) {
         float sum = 0.0f;
@@ -31,6 +31,17 @@ __global__ void matrixConvolution(float* A, float* B, float* C, int m, int n, in
             sum += A[row * n + k] * B[k * p + col];
         }
         C[row * p + col] = sum;
+    }
+
+
+    if (row < m && col < p && layer < q) {
+        float sum = 0.0f;
+        for (int z = 0; z < q; z++) {    
+            for (int k = 0; k < n; k++) {
+                sum += A[row * n + k] * B[k * p + col];
+            }
+            C[row * p + col + layer] = sum;
+        }
     }
 }
 
@@ -67,7 +78,7 @@ int main() {
     int n = 5;
     int p = 28;
 
-    float A[m * n] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25};
+    float A[m * n] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 , 27, 28 , 29, 30 , 31, 32, 33, 34, 35, 36, 37, 38, 39, 40};
     float B[n * p] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28};
     float C[m * p];
     printf("A = ");
@@ -79,25 +90,3 @@ int main() {
     MatrixPrint(C, m, p);
     return 0;
 }
-
-
-
-
-
-////// 2) Une matrice float C1_data de taille 6x28x28 initialisé à 0 qui prendra les valeurs de sortie de la convolution 2D. 
-////// C1 correspond aux données après la première Convolution.
-
-
-
-
-////// 3) Une matrice float S1_data de taille 6x14x14 intialisé à 0 qui prendra les valeurs de sortie du sous-échantillonnage. 
-////// S1 correspond aux données après le premier Sous-échantillonnage.
-
-
-
-
-
-
-
-////// 4) Une matrice float C1_kernel de taille 6x5x5 initialisé à des valeurs comprises entre 0 et 1 correspondant à nos premiers noyaux de convolution.
-
