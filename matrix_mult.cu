@@ -48,6 +48,49 @@ __global__ void cudaElementMatrixSum(float *M, float *sum, int n) {
     int j = threadIdx.x;
     atomicAdd(sum, M[i * n + j]);
 }
+
+
+//////////////////////////////////////  MATRIX CONVOLUTION GPU  //////////////////////////////////////
+
+/*
+__global__ void cudaMatrixConvolution(float *M, float *Kernel, float *Out,  int n, int p , int r) {
+    /*This function takes as input
+    * M: the input matrix
+    * Kernel: the kernel matrix
+    * Out: the output matrix
+    * n: the size of the input matrix
+    * p: the size of the kernel matrix
+    * r: the size of the output matrix
+    */
+
+/*
+    int i = blockIdx.x;
+    int j = threadIdx.x;
+    float *Mout;
+
+    int k, l;
+    float sum = 0;
+
+
+
+    // Matrix Element Multiplication
+    Mout[i * n + j] = M[i * n + j] * Kernel[i * n + j];
+    // Matrix emelent sum
+    atomicAdd(sum, Mout[i * n + j]);
+    // assigning variables to the out matrix 
+    Out[0] = sum;
+*/
+
+/*
+    for (k = 0; k < r; k++)
+        for (l = 0; l < r; l++)
+            sum += M[(i + k) * n + (j + l)] * Kernel[k * r + l];
+
+    Out[i * n + j] = sum;
+
+    
+}
+*/
 ////////////////////////////////////// MATRIX ADD //////////////////////////////////////
 
 
@@ -325,7 +368,7 @@ int test_raw_data() {
 */
     cudaMalloc((void **)&d_M_C1_kernel,  r * r * sizeof(float));
     cudaMemcpy(d_M_C1_kernel, C1_kernel,  r * r * sizeof(float), cudaMemcpyHostToDevice);
-    MatrixPrint(C1_kernel, r, r);
+    // MatrixPrint(C1_kernel, r, r);
 
     free(C1_kernel);
     cudaFree(d_M_C1_kernel);
@@ -334,8 +377,6 @@ int test_raw_data() {
 
 //////////////////////////////////////////////////////////////////////////////////
 //////////////////////////// Layer 2 - Convolution 2D ////////////////////////////
-
-
 
 
 
@@ -352,9 +393,70 @@ int main() {
     GPUtest();
     */ 
 
+    float *d_M, *d_Out, *d_Kernel;
+    float *M, *Out, *Kernel;
+
+    int n = 5;
+    int p = n, q = 1;
+    int* d_sum;
+
+    M = (float *)malloc(n * n * sizeof(float));
+    Kernel = (float *)malloc(p * p * sizeof(float));
+    Out = (float *)malloc(q * q * sizeof(float));
     
-    test_raw_data();
-    // conv_test();
+
+
+    MatrixInit(M, n, n);
+    MatrixInit(Kernel, p, p);
+    MatrixInit(Out, q, q);
+
+
+
+    cudaMalloc((void **)&d_M, n * n * sizeof(float));
+    cudaMalloc((void **)&d_Kernel, p * p * sizeof(float));
+    cudaMalloc((void **)&d_Out, q * q * sizeof(float));
+
+
+
+
+    cudaMemcpy(d_M, M, n * p * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_Kernel, Kernel, p * p * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_Out, Out, q * q * sizeof(float), cudaMemcpyHostToDevice);
+
+    // cudaMatrixConvolution<<<n, p>>>(d_M, d_Kernel, d_Out, n, p, q);
+
+
+    cudaElementMatrixMult<<n, n>>(d_M, d_Kernel , d_Out, n);
+     
+
+     
+
+    cudaMemcpy(M, d_M, n * p * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaElementMatrixSum<< n >>(d_Out, d_sum, n);
+    cudaMemcpy(Out, d_Out, p * p * sizeof(float), cudaMemcpyDeviceToHost);
+
+
+
+    // cudaMemcpy(Out, d_Out, q * q * sizeof(float), cudaMemcpyDeviceToHost);
+
+
+    // print the name 
+    printf("M\n");
+    MatrixPrint(M, n, n);
+
+
+    printf("Kernel\n");
+    MatrixPrint(Kernel, p, p);
+
+
+    printf("Out\n");
+    MatrixPrint(Out, q, q);
+
+    free(M);
+
+    cudaFree(d_M);
+    cudaFree(d_Kernel);
+    cudaFree(d_Out);
     return 0;
 }
 
