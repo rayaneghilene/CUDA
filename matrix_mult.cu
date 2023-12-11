@@ -15,7 +15,7 @@ void MatrixInit(float *M, int n, int p) {
     int i, j;
     for (i = 0; i < n; i++)
         for (j = 0; j < p; j++)
-            M[i * p + j] = (static_cast<float>(rand()) / RAND_MAX) * 2 - 1;
+            M[i * p + j] = (static_cast<float>(rand()) / RAND_MAX) /* * 2 - 1*/;
 }
 
 ////////////////////////////////////// MATRIX PRINT //////////////////////////////////////
@@ -26,12 +26,28 @@ void MatrixPrint(float *M, int n, int p) {
     for (i = 0; i < n; i++) {
         printf("\n");
         for (j = 0; j < p; j++)
-            printf("%f\t", M[i * p + j]);
+            printf("%.2f\t", M[i * p + j]); // Print the matrix element with 2 decimal places
     
     }
     printf("\n");
 }
 
+
+////////////////////////////////////// ELEMENT MATRIX MULTIPLICATION GPU //////////////////////////////////////
+
+__global__ void cudaElementMatrixMult(float *M1, float *M2, float *Mout, int n) {
+    int i = blockIdx.x;
+    int j = threadIdx.x;
+    Mout[i * n + j] = M1[i * n + j] * M2[i * n + j];
+}
+
+//////////////////////////////////////  MATRIX SUM GPU  //////////////////////////////////////
+
+__global__ void cudaElementMatrixSum(float *M, float *sum, int n) {
+    int i = blockIdx.x;
+    int j = threadIdx.x;
+    atomicAdd(sum, M[i * n + j]);
+}
 ////////////////////////////////////// MATRIX ADD //////////////////////////////////////
 
 
@@ -249,25 +265,26 @@ int test_raw_data() {
     cudaMemcpy(d_M_raw, raw_data, n * n * sizeof(float), cudaMemcpyHostToDevice);
     // MatrixPrint(raw_data, n, n);
 
+
     free(raw_data);
     cudaFree(d_M_raw);
 
-///////// init the C1_data matrix with random values 0  /////////////////////////
+///////// init the C1_data matrix with 0 values   /////////////////////////
      
     int c = 28;
-    float* C1_data = (float*)malloc(6* c * c * sizeof(float));
+    float* C1_data = (float*)malloc( c * c * sizeof(float));
     float *d_M_C1;
     int i, j, y;
     
-    for (y = 0; y < 6; y++)
+    for (y = 0; y < 1; y++)
         for (i = 0; i < c; i++)
             for (j = 0; j < c; j++)
                 C1_data[i * c + j] = static_cast<float>(0) ;
 
 
-    cudaMalloc((void **)&d_M_C1, 6 * c * c * sizeof(float));
-    cudaMemcpy(d_M_C1, C1_data, 6 * c * c * sizeof(float), cudaMemcpyHostToDevice);
-    // MatrixPrint(C1_data, 6*c, 6*c);
+    cudaMalloc((void **)&d_M_C1,  c * c * sizeof(float));
+    cudaMemcpy(d_M_C1, C1_data, c * c * sizeof(float), cudaMemcpyHostToDevice);
+    // MatrixPrint(C1_data, c, c);
 
     free(C1_data);
     cudaFree(d_M_C1);
@@ -275,17 +292,17 @@ int test_raw_data() {
 ///////// init the S1_data matrix with random values 0  /////////////////////////
  
     int d = 14;
-    float* S1_data = (float*)malloc(d * d * sizeof(float));
+    float* S1_data = (float*)malloc( d * d * sizeof(float));
     float *d_M_S1;
 
-    for (y = 0; y < 6; y++)
+    for (y = 0; y < 1; y++)
         for (i = 0; i < d; i++)
             for (j = 0; j < d; j++)
-                C1_data[i * d + j] = static_cast<float>(0) ;
+                S1_data[i * d + j] = static_cast<float>(0) ;
 
-    cudaMalloc((void **)&d_M_S1, 6 * d * d * sizeof(float));
-    cudaMemcpy(d_M_S1, S1_data, 6 * d * d * sizeof(float), cudaMemcpyHostToDevice);
-    // MatrixPrint(S1_data, 6*d, 6*d);
+    cudaMalloc((void **)&d_M_S1,  d * d * sizeof(float));
+    cudaMemcpy(d_M_S1, S1_data,  d * d * sizeof(float), cudaMemcpyHostToDevice);
+    // MatrixPrint(S1_data, d, d);
 
     free(S1_data);
     cudaFree(d_M_S1);
@@ -296,15 +313,19 @@ int test_raw_data() {
     int r = 5;
     float* C1_kernel = (float*)malloc(r * r * sizeof(float));
     float *d_M_C1_kernel;
+    
+    MatrixInit(C1_kernel, r, r);   
 
+/*
     for (y = 0; y < 6; y++)
         for (i = 0; i < r; i++)
             for (j = 0; j < r; j++)
                 C1_kernel[i * r + j] = (static_cast<float>(rand()) / RAND_MAX) * 2  ;
 
-    cudaMalloc((void **)&d_M_C1_kernel, 6 * r * r * sizeof(float));
-    cudaMemcpy(d_M_C1_kernel, C1_kernel, 6 * r * r * sizeof(float), cudaMemcpyHostToDevice);
-    // MatrixPrint(C1_kernel, 6*r, 6*r);
+*/
+    cudaMalloc((void **)&d_M_C1_kernel,  r * r * sizeof(float));
+    cudaMemcpy(d_M_C1_kernel, C1_kernel,  r * r * sizeof(float), cudaMemcpyHostToDevice);
+    MatrixPrint(C1_kernel, r, r);
 
     free(C1_kernel);
     cudaFree(d_M_C1_kernel);
@@ -332,7 +353,7 @@ int main() {
     */ 
 
     
-    // test_raw_data();
+    test_raw_data();
     // conv_test();
     return 0;
 }
