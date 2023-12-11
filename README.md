@@ -13,11 +13,8 @@ This repository presents basic manipulations using CUDA. it aims to present the 
 
 
 
-## How to use
-To use the code in this repository, simply clone the repository and navigate to the folder corresponding to the functions you're interested in. Each file contains its own set of instructions, which should be self-contained and easy to follow.
 
-
-## Practical work
+### Practical work
 We started by testing the difference in execution time of the CPU vs GPU, here's what we found:
 
 ![CPU_vs_GPU](https://github.com/rayaneghilene/CUDA/blob/main/Screenshot%20from%202023-12-06%2016-51-21.png)
@@ -25,17 +22,23 @@ We started by testing the difference in execution time of the CPU vs GPU, here's
 As we can see the GPU outperforms the CPU in bit instructions, adding and multiplying matrixes 
 
 Next we will try to define a CNN model architecture by first defining a 2D convolution Function, defining our model and then testing it on the MNIST Dataset
-# CNN model Implementation
+## CNN model Implementation
 
 
 
-## Contact
+
+
+### How to use
+To use the code in this repository, simply clone the repository and navigate to the folder corresponding to the functions you're interested in. Each file contains its own set of instructions, which should be self-contained and easy to follow.
+
+
+### Contact
 If you have any questions or would like to discuss my work further, please don't hesitate to contact me at rayane.ghilene@ensea.fr.
 
 
-## Credits
+### Credits
 This repository was created by GHILENE Rayane. The labs were adapted from the course materials provided by Mr Larue Nicolas at ENSEA.
 
 
-## License
+### License
 These resources can be used for research purposes and cannot be redistributed. Please cite the corresponding publication when publishing.

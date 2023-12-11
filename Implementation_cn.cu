@@ -5,7 +5,6 @@
 
 
 
-#include <stdio.h>
 
 
 
@@ -20,11 +19,24 @@ void MatrixPrint(float *M, int n, int p) {
 }
 
 
-__global__ void matrixConvolution(float* A, float* B, float* C, int m, int n, int p, int q) {
+__global__ void matrixConvolution(float* A, float* B, float* C,  int m, int n, int p) {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     int col = blockIdx.x * blockDim.x + threadIdx.x;
-    int layer = 
+    // int num_layer = q;
 
+/*    if (row < m && col < p && num_layer < q) {
+        float sum = 0.0f;
+        
+        for (int z = 0; z < q; z++) {    
+            for (int k = 0; k < n; k++) {
+                sum += A[row * n + k] * B[k * p + col];
+            }
+            C[row * p + col] = sum;
+        }
+        conv[num_layer] = C;
+    }
+
+*/
     if (row < m && col < p) {
         float sum = 0.0f;
         for (int k = 0; k < n; k++) {
@@ -34,15 +46,6 @@ __global__ void matrixConvolution(float* A, float* B, float* C, int m, int n, in
     }
 
 
-    if (row < m && col < p && layer < q) {
-        float sum = 0.0f;
-        for (int z = 0; z < q; z++) {    
-            for (int k = 0; k < n; k++) {
-                sum += A[row * n + k] * B[k * p + col];
-            }
-            C[row * p + col + layer] = sum;
-        }
-    }
 }
 
 void convolution(float* A, float* B, float* C, int m, int n, int p) {
@@ -78,7 +81,8 @@ int main() {
     int n = 5;
     int p = 28;
 
-    float A[m * n] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 , 27, 28 , 29, 30 , 31, 32, 33, 34, 35, 36, 37, 38, 39, 40};
+
+    float A[m * n] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 , 27, 28};
     float B[n * p] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28};
     float C[m * p];
     printf("A = ");
